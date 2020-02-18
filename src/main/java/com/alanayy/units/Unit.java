@@ -23,6 +23,7 @@ public class Unit {
     private ArrayList<Unit> adjacentAllies, twoSpaceAllies, adjacentFoes, twoSpaceFoes,
             cardinalAllies, cardinalFoes;
     private Unit ally1, ally2, ally3, enemy;
+    private Unit enemy1, enemy2, enemy3, enemy4;
 
     public Unit(String name, String color, String race, String type, int lvl, int hp,
                 int atk, int spd, int def, int res) {
@@ -301,6 +302,15 @@ public class Unit {
      * -----------------------
      */
 
+
+    public Unit getEnemy() {
+        return enemy;
+    }
+
+    public void setEnemy(Unit enemy) {
+        this.enemy = enemy;
+    }
+
     public List<Unit> getTeammates() {
         return Arrays.asList(ally1, ally2, ally3);
     }
@@ -311,12 +321,15 @@ public class Unit {
         this.ally3 = ally3;
     }
 
-    public Unit getEnemy() {
-        return enemy;
+    public List<Unit> getEnemyTeam() {
+        return Arrays.asList(enemy1, enemy2, enemy3, enemy4);
     }
 
-    public void setEnemy(Unit enemy) {
-        this.enemy = enemy;
+    public void setEnemyTeam(Unit enemy1, Unit enemy2, Unit enemy3, Unit enemy4) {
+        this.enemy1 = enemy1;
+        this.enemy2 = enemy2;
+        this.enemy3 = enemy3;
+        this.enemy4 = enemy4;
     }
 
     public ArrayList<Unit> getAdjacentAllies() {
