@@ -48,6 +48,8 @@ public class Combat {
 
     private int damageCalc(Unit atk, Unit def) {
         // TODO Calculate damage.
+        return 0;
+        // REMOVE THIS 0! It's only here so the Build is updated lol.
     }
 
     public int getCombatState() {

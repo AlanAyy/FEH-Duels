@@ -7,8 +7,8 @@ import java.util.ArrayList;
 
 public class PassiveC {
 
-    public PassiveC(PassiveListC passive, Unit unit) {
-        int phase = Combat.getPhase();
+    public PassiveC(PassiveListC passive, Unit unit, Combat combat) {
+        int phase = combat.getPhase();
         boolean attacking = unit.isAttacking();
         boolean attacked = unit.isAttacked();
         ArrayList<Unit> adjacentAllies = unit.getAdjacentAllies();
