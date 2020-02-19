@@ -4,6 +4,14 @@ import com.alanayy.units.Unit;
 
 public class StatusEffect {
 
+    /*
+     * ------------
+     * |  LEGEND  |
+     * ------------
+     * T  = Target
+     * 2S = Two Spaces
+     */
+
     /**
      * --------------------
      * |  Combat Effects  |
@@ -21,7 +29,17 @@ public class StatusEffect {
      * -----------------
      */
 
-    public static void panicTargetAndTwoSpaces(Unit unit) {
+    public static void panicT2S(Unit unit) {
+
+    }
+
+    /**
+     * -------------------
+     * |  Other Effects  |
+     * -------------------
+     */
+
+    public static void dealDamageT2S() {
 
     }
 }
