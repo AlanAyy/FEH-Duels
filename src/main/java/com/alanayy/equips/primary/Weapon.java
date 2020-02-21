@@ -3,6 +3,8 @@ package com.alanayy.equips.primary;
 import com.alanayy.combat.Combat;
 import com.alanayy.units.Unit;
 
+import static com.alanayy.combat.StatusEffect.*;
+
 public class Weapon {
 
     private int might, range;
@@ -15,12 +17,11 @@ public class Weapon {
             case BINDING_BLADE_EFF:
                 // Effective against dragon foes.
                 if (enemy.getRace().equals("DRAGON")) {
-                    // TODO Make effective.
+                    unit.setEffective(true);
                 }
                 // If foe initiates combat, grants Def/Res +4 during combat.
                 if (unit.isAttacked()) {
-                    unit.setTempDef(unit.getTempDef() + 4);
-                    unit.setTempRes(unit.getTempRes() + 4);
+                    affectDefRes(unit, 4);
                     // If unit's HP >= 50% and foe initiates combat, unit makes a guaranteed follow-up attack.
                     if (unit.getTempHp() >= unit.getHp() * 0.5) {
                         unit.setFollowUp(true);
@@ -38,10 +39,7 @@ public class Weapon {
                     unit.setFarCounter(true);
                 }
                 // If foe's Range = 2, damage calculated using the lower of foe's Def or Res.
-                if (unit.getTwoSpaceFoes().contains(enemy)
-                        && !unit.getAdjacentFoes().contains(enemy)) {
-                    unit.setAdaptiveDmg(true);
-                }
+                adaptiveDmgIfERangeIs2(unit);
                 break;
             case CHERCHES_AXE_EFF:
                 // Inflicts Spd-5.
@@ -56,7 +54,7 @@ public class Weapon {
                 // with HP < unit's HP into penalties through their next actions.
                 if (combatState == Combat.START_TURN) {
                     for (Unit cardinalFoe : unit.getCardinalFoes()) {
-                        resolvePanic(cardinalFoe);
+                        panicTNA(cardinalFoe);
                     }
                 }
                 break;
@@ -65,15 +63,7 @@ public class Weapon {
                 // At start of turn, inflicts Res-7 on foe on the enemy team
                 // with the highest Res through its next action.
                 if (combatState == Combat.START_TURN) {
-                    int highestRes = 0;
-                    Unit highestResUnit = unit;
-                    for (Unit foe : unit.getEnemyTeam()) {
-                        if (foe.getTempRes() > highestRes) {
-                            highestRes = foe.getTempRes();
-                            highestResUnit = foe;
-                        }
-                    }
-                    highestResUnit.setTempRes(highestResUnit.getTempRes() - 7);
+                    chillResETNA(unit, 7);
                 }
                 // If unit initiates combat, grants Atk+6 during combat.
                 if (unit.isAttacking()) {
@@ -98,10 +88,7 @@ public class Weapon {
                 // At start of turn, deals 20 damage to foes within 2 spaces.
                 if (combatState == Combat.START_TURN) {
                     for (Unit foe : unit.getTwoSpaceFoes()) {
-                        foe.setTempHp(foe.getTempHp() - 20);
-                        if (foe.getTempHp() <= 0) {
-                            foe.setTempHp(1);
-                        }
+                        affectHp(foe, -20);
                     }
                 }
                 break;
@@ -114,8 +101,7 @@ public class Weapon {
                 // grants Atk/Spd+4 during combat,
                 if ((unit.isAttacked() || unit.isAttacking())
                         && unit.getTempHp() >= unit.getHp() * 0.5) {
-                    unit.setTempAtk(unit.getTempAtk() + 4);
-                    unit.setTempSpd(unit.getTempSpd() + 4);
+                    affectAtkSpd(unit, 4);
                 }
                 // and if unit initiates combat,
                 // foe cannot make a follow-up attack.
@@ -125,11 +111,9 @@ public class Weapon {
                 // After combat, if unit attacked, inflict Def/Res-7 on target and
                 // foes within 2 spaces of target through their next actions,
                 if (combatState == Combat.AFTER_COMBAT && unit.isAttacking()) {
-                    enemy.setTempDef(enemy.getTempDef() - 7);
-                    enemy.setTempRes(enemy.getTempRes() - 7);
-                    for (Unit foe : enemy.getTwoSpaceAllies()) {
-                        foe.setTempDef(foe.getTempDef() - 7);
-                        foe.setTempRes(foe.getTempRes() - 7);
+                    affectDefResTNA(enemy, -7);
+                    for (Unit foe : enemy.getTeammates()) {
+                        affectDefResTNA(foe, -7);
                     }
                 }
                 // and if bonus was granted to unit, deals 4 damage to unit.
@@ -138,16 +122,13 @@ public class Weapon {
             case RAZING_BREATH:
                 // Effective against dragon foes.
                 if (enemy.getRace().equals("DRAGON")) {
-                    // TODO Make effective.
+                    unit.setEffective(true);
                 }
                 // Unit can counterattack regardless of foe's range.
                 unit.setCloseCounter(true);
                 unit.setFarCounter(true);
                 // If foe's Range = 2, calculates damage using the lower of foe's Def or Res.
-                if (unit.getTwoSpaceFoes().contains(enemy)
-                        && !unit.getAdjacentFoes().contains(enemy)) {
-                    unit.setAdaptiveDmg(true);
-                }
+                adaptiveDmgIfERangeIs2(unit);
                 break;
         }
     }
@@ -179,26 +160,6 @@ public class Weapon {
      * |  Status Effects  |
      * --------------------
      */
-
-    public void resolvePanic(Unit unit) {
-        int difference;
-
-        difference = unit.getTempAtk() - unit.getAtk();
-        if (difference > 0)
-            unit.setTempAtk(unit.getTempAtk() - difference * 2);
-
-        difference = unit.getTempSpd() - unit.getSpd();
-        if (difference > 0)
-            unit.setTempSpd(unit.getSpd() - difference * 2);
-
-        difference = unit.getTempDef() - unit.getDef();
-        if (difference > 0)
-            unit.setTempDef(unit.getTempDef() - difference * 2);
-
-        difference = unit.getTempRes() - unit.getRes();
-        if (difference > 0)
-            unit.setTempRes(unit.getTempRes() - difference * 2);
-    }
 
     public enum WeaponName {
         BINDING_BLADE_EFF, LIGHTNING_BREATH_SPD, CHERCHES_AXE_EFF, FORBLAZE_EFF,

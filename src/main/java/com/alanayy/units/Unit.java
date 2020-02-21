@@ -13,7 +13,7 @@ public class Unit {
 
     private int id;
     private String name, color, race, type;
-    private boolean isAttacking, isAttacked, canAttackTwice, canAdaptiveDmg,
+    private boolean isAttacking, isAttacked, isEffective, canAttackTwice, canAdaptiveDmg,
             canCloseCounter, canFarCounter, canFollowUp, hasCounterPriority;
     private int lvl, hp, atk, spd, def, res, movement;
     private int tempHp, tempAtk, tempSpd, tempDef, tempRes, tempMovement;
@@ -244,8 +244,24 @@ public class Unit {
         return isAttacking;
     }
 
+    public void setAttacking(boolean isAttacking) {
+        this.isAttacking = isAttacking;
+    }
+
     public boolean isAttacked() {
         return isAttacked;
+    }
+
+    public void setAttacked(boolean isAttacked) {
+        this.isAttacked = isAttacked;
+    }
+
+    public boolean isEffective() {
+        return isEffective;
+    }
+
+    public void setEffective(boolean isEffective) {
+        this.isEffective = isEffective;
     }
 
     public boolean canAttackTwice() {
