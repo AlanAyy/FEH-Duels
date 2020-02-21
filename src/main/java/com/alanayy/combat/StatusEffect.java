@@ -8,10 +8,11 @@ public class StatusEffect {
      * ------------
      * |  LEGEND  |
      * ------------
-     * U   = Affects Unit (unit)
-     * E   = Affects Enemy/Enemies (AKA unit.getEnemy())
+     * U   = Affects Unit          (unit)
+     * E   = Affects Enemy/Enemies (unit.getEnemy())
+     * P   = By Percentage         (0.00 -> 1.00)
      * TNA = Through Next Action
-     * 2S  = Two Spaces
+     * 2S  = Two Spaces            (unit.getTwoSpaceAllies())
      */
 
     /**
@@ -28,6 +29,11 @@ public class StatusEffect {
     public static void affectDefRes(Unit unit, int val) {
         unit.setTempDef(unit.getTempDef() + val);
         unit.setTempRes(unit.getTempRes() + val);
+    }
+
+    public static void affectDefResP(Unit unit, double pct) {
+        unit.setTempDef((int) Math.round(unit.getTempDef() * pct));
+        unit.setTempRes((int) Math.round(unit.getTempRes() * pct));
     }
 
     public static void adaptiveDmgIfERangeIs2(Unit unit) {
