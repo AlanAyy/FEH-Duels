@@ -15,5 +15,6 @@ also, ppl are probably gonna be like "hey can u make this shitty program work be
 ## aaaaaaaaaaaaaaa
 
 To Do List:
+- [ ] Bug-test Specials (cooldown charges might have to get flipped).
 - [ ] Turn individual stats into a single stat array (this is gonna involve so much cleanup omg).
 - [ ] Make everything NOT revolve around the Unit lol (more of a quality-of-life fix than anything).

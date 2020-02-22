@@ -1,9 +1,9 @@
 package com.alanayy.units;
 
 import com.alanayy.equips.primary.Weapon;
-import com.alanayy.equips.secondary.passives.PassiveA;
-import com.alanayy.equips.secondary.passives.PassiveB;
-import com.alanayy.equips.secondary.passives.PassiveC;
+import com.alanayy.equips.secondary.passives.PassiveA.PassiveNameA;
+import com.alanayy.equips.secondary.passives.PassiveB.PassiveNameB;
+import com.alanayy.equips.secondary.passives.PassiveC.PassiveNameC;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -22,7 +22,8 @@ public class Unit {
     private int specCharge, tempSpecCharge;
     private ArrayList<Unit> adjacentAllies, twoSpaceAllies, adjacentFoes, twoSpaceFoes,
             cardinalAllies, cardinalFoes;
-    private Unit ally1, ally2, ally3, enemy;
+    private Unit targetAlly, targetEnemy;
+    private Unit ally1, ally2, ally3;
     private Unit enemy1, enemy2, enemy3, enemy4;
 
     public Unit(String name, String color, String race, String type, int lvl, int hp,
@@ -214,7 +215,7 @@ public class Unit {
         return passiveList;
     }
 
-    public void setPassives(PassiveA.PassiveListA a, PassiveB.PassiveListB b, PassiveC.PassiveListC c) {
+    public void setPassives(PassiveNameA a, PassiveNameB b, PassiveNameC c) {
         passiveList = new ArrayList<>(Arrays.asList(a, b, c));
     }
 
@@ -318,20 +319,27 @@ public class Unit {
      * -----------------------
      */
 
-
-    public Unit getEnemy() {
-        return enemy;
+    public Unit getTargetAlly() {
+        return targetAlly;
     }
 
-    public void setEnemy(Unit enemy) {
-        this.enemy = enemy;
+    public void setTargetAlly(Unit targetAlly) {
+        this.targetAlly = targetAlly;
     }
 
-    public List<Unit> getTeammates() {
+    public Unit getTargetEnemy() {
+        return targetEnemy;
+    }
+
+    public void setTargetEnemy(Unit targetEnemy) {
+        this.targetEnemy = targetEnemy;
+    }
+
+    public List<Unit> getAllyTeam() {
         return Arrays.asList(ally1, ally2, ally3);
     }
 
-    public void setTeammates(Unit ally1, Unit ally2, Unit ally3) {
+    public void setAllyTeam(Unit ally1, Unit ally2, Unit ally3) {
         this.ally1 = ally1;
         this.ally2 = ally2;
         this.ally3 = ally3;

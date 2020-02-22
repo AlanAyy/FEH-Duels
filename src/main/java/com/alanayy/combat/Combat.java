@@ -35,7 +35,6 @@ public class Combat {
         phase++;
     }
 
-
     /**
      * ------------------------
      * |  Fight Calculations  |

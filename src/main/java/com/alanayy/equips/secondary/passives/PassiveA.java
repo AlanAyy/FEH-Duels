@@ -5,7 +5,7 @@ import com.alanayy.units.Unit;
 
 public class PassiveA {
 
-    public PassiveA(PassiveListA passive, Unit unit, Combat combat) {
+    public PassiveA(PassiveNameA passive, Unit unit, Combat combat) {
         int hp = unit.getTempHp();
         int maxHp = unit.getHp();
         boolean attacking = unit.isAttacking();
@@ -48,7 +48,7 @@ public class PassiveA {
         }
     }
 
-    public enum PassiveListA {
+    public enum PassiveNameA {
         DISTANT_COUNTER, STEADY_STANCE_4, FURY_3, DEATHBLOW_4,
         SWIFT_SPARROW_2, BRAZEN_ATKSPD_3
     }

@@ -8,11 +8,12 @@ public class StatusEffect {
      * ------------
      * |  LEGEND  |
      * ------------
-     * U   = Affects Unit          (unit)
-     * E   = Affects Enemy/Enemies (unit.getEnemy())
-     * P   = By Percentage         (0.00 -> 1.00)
-     * TNA = Through Next Action
-     * 2S  = Two Spaces            (unit.getTwoSpaceAllies())
+     * U    =  Affects Unit           (unit)
+     * E    =  Affects Enemy/Enemies  (unit.getEnemy())
+     * P    =  By Percentage          (0.00 -> 1.00)
+     * TNA  =  Through Next Action    (N/A)
+     * EOT  =  Until End of Turn      (CombatState.END_OF_TURN)
+     * 2S   =  Two Spaces             (unit.getTwoSpaceAllies())
      */
 
     /**
@@ -37,7 +38,7 @@ public class StatusEffect {
     }
 
     public static void adaptiveDmgIfERangeIs2(Unit unit) {
-        Unit enemy = unit.getEnemy();
+        Unit enemy = unit.getTargetEnemy();
         if (unit.getTwoSpaceFoes().contains(enemy)
                 && !unit.getAdjacentFoes().contains(enemy)) {
             unit.setAdaptiveDmg(true);
@@ -56,6 +57,27 @@ public class StatusEffect {
         unit.setTempRes(unit.getTempRes() + val);
     }
 
+    public static void chillAtkETNA(Unit unit, int val) {
+        int counter = 0;
+        int topAtk = 0;
+        int topAtkUnit = 0;
+        for (Unit enemy : unit.getEnemyTeam()) {
+            if (enemy.getTempAtk() > topAtk) {
+                topAtk = enemy.getTempAtk();
+                topAtkUnit = counter;
+            }
+            counter++;
+        }
+        // Gotta go through it again to change the actual Unit's value,
+        // instead of a stored value.
+        for (Unit enemy : unit.getEnemyTeam()) {
+            if (topAtkUnit == counter) {
+                enemy.setTempAtk(enemy.getTempAtk() - val);
+                break;
+            }
+        }
+    }
+
     public static void chillResETNA(Unit unit, int val) {
         int counter = 0;
         int topRes = 0;
@@ -67,6 +89,8 @@ public class StatusEffect {
             }
             counter++;
         }
+        // Gotta go through it again to change the actual Unit's value,
+        // instead of a stored value.
         for (Unit enemy : unit.getEnemyTeam()) {
             if (topResUnit == counter) {
                 enemy.setTempRes(enemy.getTempRes() - val);
@@ -93,6 +117,22 @@ public class StatusEffect {
         diff = unit.getTempRes() - unit.getRes();
         if (diff > 0)
             unit.setTempRes(unit.getTempRes() - (diff * 2));
+    }
+
+    /**
+     * -----------------------
+     * |  Turn-long Effects  |
+     * -----------------------
+     */
+
+    public static void affectAtkDefEOT(Unit unit, int val) {
+        unit.setTempAtk(unit.getTempAtk() + val);
+        unit.setTempDef(unit.getTempDef() + val);
+    }
+
+    public static void affectDefResEOT(Unit unit, int val) {
+        unit.setTempDef(unit.getTempDef() + val);
+        unit.setTempRes(unit.getTempRes() + val);
     }
 
     /**

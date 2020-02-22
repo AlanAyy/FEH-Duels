@@ -11,7 +11,7 @@ public class Weapon {
 
     public Weapon(WeaponName weaponName, Unit unit, Combat combat) {
         int combatState = combat.getCombatState();
-        Unit enemy = unit.getEnemy();
+        Unit enemy = unit.getTargetEnemy();
 
         switch (weaponName) {
             case BINDING_BLADE_EFF:
@@ -112,7 +112,7 @@ public class Weapon {
                 // foes within 2 spaces of target through their next actions,
                 if (combatState == Combat.AFTER_COMBAT && unit.isAttacking()) {
                     affectDefResTNA(enemy, -7);
-                    for (Unit foe : enemy.getTeammates()) {
+                    for (Unit foe : enemy.getAllyTeam()) {
                         affectDefResTNA(foe, -7);
                     }
                 }
@@ -154,12 +154,6 @@ public class Weapon {
     public void setRange(int range) {
         this.range = range;
     }
-
-    /**
-     * --------------------
-     * |  Status Effects  |
-     * --------------------
-     */
 
     public enum WeaponName {
         BINDING_BLADE_EFF, LIGHTNING_BREATH_SPD, CHERCHES_AXE_EFF, FORBLAZE_EFF,
