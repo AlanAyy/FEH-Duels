@@ -14,13 +14,14 @@
  * limitations under the License.
  */
 
-package com.alanayy.core;
+package com.alanayy.logs;
 
-import com.alanayy.user.TextInput;
+public class ErrorHandler {
 
-public class Main {
+    public static final int QUIT = 0;
+    public static final int ERROR = 1;
+    public static final int UNKNOWN = 999;
 
-    public static void main(String[] args) {
-        new TextInput();
-    }
+    public static final String TOO_MANY_UNITS = "There are too many units in a team!";
+
 }

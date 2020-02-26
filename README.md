@@ -12,9 +12,15 @@ just for a stupid little fire emblem 1v1 thing
 
 also, ppl are probably gonna be like "hey can u make this shitty program work better"
 
+(good thing is that im at least enjoying this project, otherwise it'd be impossible)
+
 ## aaaaaaaaaaaaaaa
 
-To Do List:
+To-Do List:
+- Minor Changes:
+- [ ] Make the Arena changeable.
 - [ ] Bug-test Specials (cooldown charges might have to get flipped).
+
+- Major Changes:
 - [ ] Turn individual stats into a single stat array (this is gonna involve so much cleanup omg).
 - [ ] Make everything NOT revolve around the Unit lol (more of a quality-of-life fix than anything).

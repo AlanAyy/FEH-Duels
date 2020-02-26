@@ -1,14 +1,32 @@
+/*
+ * Copyright 2020 Alan "AlanAyy" Alcocer-Iturriza
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package com.alanayy.user;
 
 import com.alanayy.combat.Battle;
 import com.alanayy.combat.Map;
-import com.alanayy.logs.ExitStatus;
+import com.alanayy.logs.ErrorHandler;
 import com.alanayy.units.Unit;
 import com.alanayy.user.TextCommands.Command;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
+
+import static com.alanayy.logs.ErrorHandler.TOO_MANY_UNITS;
 
 public class TextInput {
 
@@ -132,8 +150,8 @@ public class TextInput {
     }
 
     private static void startBattle() {
-        // TODO Make the arena changeable.
         setTeamIds();
+        isEverythingReady();
         battle = new Battle(team1, team2, new Map(Map.MapList.ARENA_1));
         battle.printUnitGrid();
         menuInput(fightCommands);
@@ -322,6 +340,16 @@ public class TextInput {
         battle = null;
     }
 
+    private static void isEverythingReady() {
+        if (team1.size() > 4) {
+            System.out.println("Team 1:" + TOO_MANY_UNITS);
+        }
+        if (team2.size() > 4) {
+            System.out.println("Team 2:" + TOO_MANY_UNITS);
+        }
+
+    }
+
     private static void setTeamIds() {
         for (int i = 0; i < 4; i++) {
             team1.get(i).setId(i + 1);
@@ -334,7 +362,7 @@ public class TextInput {
     private static void quitGame() {
         System.out.println("\nThanks for playing!" +
                 "\n@Sodapop#3480 on Discord if you have any feedback you'd like to give.");
-        System.exit(ExitStatus.QUIT);
+        System.exit(ErrorHandler.QUIT);
     }
 
     private static String formatCaps(String input) {
