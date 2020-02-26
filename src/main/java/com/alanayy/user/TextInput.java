@@ -23,11 +23,8 @@ import com.alanayy.units.Unit;
 import com.alanayy.user.TextCommands.Command;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
-
-import static com.alanayy.logs.ErrorHandler.TOO_MANY_UNITS;
 
 public class TextInput {
 
@@ -50,7 +47,6 @@ public class TextInput {
         makeTextCommands();
         menuInput(mainCommands);
     }
-
 
     /**
      * -------------------
@@ -78,7 +74,39 @@ public class TextInput {
     }
 
     private static void editUnit() {
-        // TODO Make unit editor.
+        if (unitList.isEmpty()) {
+            System.out.println("You haven't made any Units yet!\n");
+        } else {
+            System.out.println("Here is the list of Units you can edit:");
+            for (Unit unit : unitList) {
+                System.out.print(unit.getName() + ", ");
+            }
+            System.out.println("\nWhich units would you like to edit?");
+
+            // Input looper
+            while (true) {
+                boolean validInput = false;
+                String input = scanner.nextLine();
+                int counter = 0;
+                for (Unit unit : unitList) {
+                    String name = unit.getName();
+                    if (input.equalsIgnoreCase(name)) {
+                        validInput = true;
+                        System.out.println("Editing \"" + name + "\"...");
+                        new UnitEditor(unit);
+                        // TODO Fix whatever the fuck is happening here lol.
+                        unit = UnitEditor.saveAndClose();
+                    }
+                }
+                if (input.equals("back")) {
+                    System.out.println("Returning to previous menu...");
+                    break;
+                }
+                if (!validInput) {
+                    System.out.println(ErrorHandler.INVALID_INPUT);
+                }
+            }
+        }
     }
 
     private static void delUnit() {
@@ -138,6 +166,12 @@ public class TextInput {
 
     private static void orderTeam() {
         // TODO Make the Order Team command.
+    }
+
+    private static void clearTeam() {
+        team1.clear();
+        team2.clear();
+        System.out.println("All teams cleared!");
     }
 
     /**
@@ -208,19 +242,19 @@ public class TextInput {
             System.out.println(">>>");
             input = scanner.nextLine();
 
-            if (input.equals("help") || input.equals("?")) {
+            if (input.equals("help") || input.equals("?")) { // Help checks
                 helpMenu(commands);
                 continue;
-            } else if (input.equals("back") && !commands.equals(mainCommands)) {
+            } else if (input.equals("back") && !commands.equals(mainCommands)) { // Back checks
                 break;
-            } else if (input.equals("quit") || input.equals("exit")) {
+            } else if (input.equals("quit") || input.equals("exit")) { // Exit checks
                 quitGame();
             } else if (commands.equals(fightCommands)) {
                 if (battle.isTeamDead(1)) {
-                    printWinMsg(2);
+                    resolveWin(2);
                     break;
                 } else if (battle.isTeamDead(2)) {
-                    printWinMsg(1);
+                    resolveWin(1);
                     break;
                 }
             }
@@ -231,7 +265,7 @@ public class TextInput {
                 }
             }
             if (!validInput) {
-                System.out.println("Invalid command! Please try again.");
+                System.out.println(ErrorHandler.INVALID_INPUT);
             }
             System.out.println(System.lineSeparator());
         }
@@ -275,6 +309,9 @@ public class TextInput {
                     case "order":
                         orderTeam();
                         break;
+                    case "clear":
+                        clearTeam();
+                        break;
                     // --- Fight Menu --- //
                     case "info":
                         infoFight();
@@ -313,7 +350,8 @@ public class TextInput {
                 new Command("del", "{CMD} Delete a Unit (by name)."));
         teamCommands.addAllCommands(
                 new Command("set", "Put your Units into a Team."),
-                new Command("order", "Change the order of Units in a Team."));
+                new Command("order", "Change the order of Units in a Team."),
+                new Command("clear", "Remove all Units from all Teams."));
         fightCommands.addAllCommands(
                 new Command("info", "Get info on a Unit."),
                 new Command("check", "See what would happen before acting."),
@@ -337,23 +375,26 @@ public class TextInput {
                 unit.getAtk() + space +
                 unit.getSpd() + space +
                 unit.getDef() + space +
-                unit.getRes());
+                unit.getRes() + System.lineSeparator());
     }
 
-    private static void printWinMsg(int teamNum) {
+    private static void resolveWin(int teamNum) {
         System.out.println("Team #" + teamNum + " wins!!!\n" +
                 "Exiting to the Main Menu...");
+        // Cleanup before next fight.
         battle = null;
+        team1.clear();
+        team2.clear();
     }
 
     private static void isEverythingReady() {
+        // TODO Finish ready-check before starting battle.
         if (team1.size() > 4) {
-            System.out.println("Team 1:" + TOO_MANY_UNITS);
+            System.out.println("Team 1:" + ErrorHandler.TOO_MANY_UNITS);
         }
         if (team2.size() > 4) {
-            System.out.println("Team 2:" + TOO_MANY_UNITS);
+            System.out.println("Team 2:" + ErrorHandler.TOO_MANY_UNITS);
         }
-
     }
 
     private static void setTeamIds() {
@@ -373,5 +414,29 @@ public class TextInput {
 
     private static String formatCaps(String input) {
         return input.substring(0, 1).toUpperCase() + input.substring(1);
+    }
+
+    private static class UnitEditor {
+
+        private static final TextCommands unitEditCommands = new TextCommands();
+        private static Unit unitToEdit;
+
+        static {
+            System.out.println("Welcome to the Unit Editor!");
+
+            unitEditCommands.addAllCommands(
+                    new Command("list", "List everything about your Unit."),
+                    new Command("name", "Change your Unit's name."),
+                    new Command("set", "Set your Unit's Equipment."),
+                    new Command("clear", "Clear your Unit's Equipment."));
+        }
+
+        public UnitEditor(Unit unit) {
+            unitToEdit = unit;
+        }
+
+        public static Unit saveAndClose() {
+            return unitToEdit;
+        }
     }
 }

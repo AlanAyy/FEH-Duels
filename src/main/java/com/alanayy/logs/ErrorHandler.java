@@ -23,5 +23,6 @@ public class ErrorHandler {
     public static final int UNKNOWN = 999;
 
     public static final String TOO_MANY_UNITS = "There are too many units in a team!";
+    public static final String INVALID_INPUT = "Invalid command! Please try again.";
 
 }
