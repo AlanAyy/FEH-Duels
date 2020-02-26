@@ -23,6 +23,7 @@ import com.alanayy.units.Unit;
 import com.alanayy.user.TextCommands.Command;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
 
@@ -77,7 +78,7 @@ public class TextInput {
     }
 
     private static void editUnit() {
-
+        // TODO Make unit editor.
     }
 
     private static void delUnit() {
@@ -146,7 +147,7 @@ public class TextInput {
      */
 
     private static void startDemoBattle() {
-        // TODO Make demo battle.
+
     }
 
     private static void startBattle() {
@@ -251,6 +252,9 @@ public class TextInput {
                     case "team":
                         menuInput(teamCommands);
                         break;
+                    case "demo":
+                        startDemoBattle();
+                        // NO BREAK! Demo just makes the teams and feeds into "start".
                     case "start":
                         startBattle();
                         break;
@@ -301,8 +305,10 @@ public class TextInput {
         mainCommands.addAllCommands(
                 new Command("unit", "Make changes to your Units."),
                 new Command("team", "Change your Fire Emblem team."),
+                new Command("demo", "Start a fight with basic Units."),
                 new Command("start", "Enter the Arena and fight!"));
         unitCommands.addAllCommands(
+                new Command("list", "{CMD} List available Units."),
                 new Command("new", "{CMD} Make a new Unit."),
                 new Command("del", "{CMD} Delete a Unit (by name)."));
         teamCommands.addAllCommands(
