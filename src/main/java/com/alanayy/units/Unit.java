@@ -88,20 +88,40 @@ public class Unit {
         return name;
     }
 
+    public void setName(String name) {
+        this.name = name;
+    }
+
     public int getLvl() {
         return lvl;
+    }
+
+    public void setLvl(int lvl) {
+        this.lvl = lvl;
     }
 
     public String getColor() {
         return color;
     }
 
+    public void setColor(String color) {
+        this.color = color;
+    }
+
     public String getRace() {
         return race;
     }
 
+    public void setRace(String race) {
+        this.race = race;
+    }
+
     public String getType() {
         return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
     }
 
 

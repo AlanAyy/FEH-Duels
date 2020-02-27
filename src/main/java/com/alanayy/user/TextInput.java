@@ -30,6 +30,7 @@ public class TextInput {
 
     private static final TextCommands mainCommands = new TextCommands();
     private static final TextCommands unitCommands = new TextCommands();
+    private static final TextCommands unitEditCommands = new TextCommands();
     private static final TextCommands teamCommands = new TextCommands();
     private static final TextCommands fightCommands = new TextCommands();
     private static final Scanner scanner = new Scanner(System.in);
@@ -83,7 +84,6 @@ public class TextInput {
                 System.out.print(unit.getName() + ", ");
             }
             System.out.println("\nWhich units would you like to edit?");
-
             // Input looper
             while (true) {
                 boolean validInput = false;
@@ -94,9 +94,12 @@ public class TextInput {
                     if (input.equalsIgnoreCase(name)) {
                         validInput = true;
                         System.out.println("Editing \"" + name + "\"...");
-                        // menuInput(unitEditCommands);
-                        // unitList.remove(i);
-                        // unitList.add(i, editAndGetUnit(unit));
+                        menuInput(unitEditCommands);
+                        tempUnit = unit;
+                        unitList.remove(i);
+                        unitList.add(i, tempUnit);
+                        System.out.println("Unit \"" + tempUnit.getName() + "\" has been updated!");
+                        tempUnit = null;
                         break;
                     }
                 }
@@ -110,11 +113,6 @@ public class TextInput {
             }
         }
     }
-
-    // private static Unit editAndGetUnit(Unit unit) {
-    //     new UnitEditor(unit);
-    //     return unit;
-    // }
 
     private static void delUnit() {
         boolean unitFound = false;
@@ -135,6 +133,65 @@ public class TextInput {
             System.out.println("Unit \"" + capsInput + "\" was successfully removed!");
         } else {
             System.out.println("Unit \"" + capsInput + "\" could not be found. Unit was NOT removed!");
+        }
+    }
+
+    /**
+     * ------------------------
+     * |  Unit>Edit Commands  |
+     * ------------------------
+     */
+
+    private static void unitEditor(String unitValToChange) {
+        System.out.println("What would you like to set your Unit's \"" + unitValToChange + "\" to?");
+        String input = scanner.nextLine();
+
+        switch (unitValToChange) {
+            case "name":
+                tempUnit.setName(input);
+                break;
+            case "color":
+                tempUnit.setColor(input);
+                break;
+            case "race":
+                tempUnit.setRace(input);
+                break;
+            case "type":
+                tempUnit.setType(input);
+                break;
+            case "stats":
+                // TODO Set stats and remove properly omg.
+            case "rmv":
+                System.out.println("Coming soon!");
+                break;
+            case "wep":
+                // tempUnit.setWeapon(strToWeapon());
+                // TODO Set weapons properly omg.
+                break;
+            case "asst":
+                // tempUnit.setAssist(input);
+                // TODO Set assists properly omg.
+                break;
+            case "spec":
+                // tempUnit.setSpecial(input);
+                // TODO Set specials properly omg.
+                break;
+            case "psvA":
+                // tempUnit.setPassives(strToPassiveNameA());
+                // TODO Set passives properly omg.
+                break;
+            case "psvB":
+                // tempUnit.setPassives(strToPassiveNameB());
+                // TODO Set passives properly omg.
+                break;
+            case "psvC":
+                // tempUnit.setPassives(strToPassiveNameC());
+                // TODO Set passives properly omg.
+                break;
+            case "seal":
+                // tempUnit.setSeal(input);
+                // TODO Set seals properly omg.
+                break;
         }
     }
 
@@ -188,7 +245,7 @@ public class TextInput {
      */
 
     private static void startDemoBattle() {
-
+        // TODO Make Demo Battle :v
     }
 
     private static void startBattle() {
@@ -280,7 +337,7 @@ public class TextInput {
         quitGame();
     }
 
-    protected static void resolveInput(String input, TextCommands commands) {
+    private static void resolveInput(String input, TextCommands commands) {
         List<Command> cmdList = commands.getCommandList();
         for (Command command : cmdList)
             if (command.getCmd().equals(input))
@@ -308,6 +365,23 @@ public class TextInput {
                         break;
                     case "del":
                         delUnit();
+                        break;
+                    // --- Unit>Edit Menu --- //
+                    // "list" is already taken care of by Unit Menu, so we'll exclude it.
+                    case "name":
+                    case "color":
+                    case "race":
+                    case "type":
+                    case "stats":
+                    case "wep":
+                    case "asst":
+                    case "spec":
+                    case "psvA":
+                    case "psvB":
+                    case "psvC":
+                    case "seal":
+                    case "rmv":
+                        unitEditor(input);
                         break;
                     // --- Team Menu --- //
                     case "set":
@@ -355,6 +429,21 @@ public class TextInput {
                 new Command("list", "{CMD} List available Units."),
                 new Command("new", "{CMD} Make a new Unit."),
                 new Command("del", "{CMD} Delete a Unit (by name)."));
+        unitEditCommands.addAllCommands(
+                new Command("list", "List everything about your Unit."),
+                new Command("name", "Change your Unit's name."),
+                new Command("color", "Change your Unit's color."),
+                new Command("race", "Change your Unit's race."),
+                new Command("type", "Change your Unit's movement type."),
+                new Command("stats", "Change your Unit's stats."),
+                new Command("wep", "Set your Unit's Weapon."),
+                new Command("asst", "Set your Unit's Assist Skill."),
+                new Command("spec", "Set your Unit's Special Skill."),
+                new Command("psvA", "Set your Unit's (A) Passive."),
+                new Command("psvB", "Set your Unit's (B) Passive."),
+                new Command("psvC", "Set your Unit's (C) Passive."),
+                new Command("seal", "Set your Unit's Seal."),
+                new Command("rmv", "Remove your Unit's equipment (all but name, attributes and stats)."));
         teamCommands.addAllCommands(
                 new Command("set", "Put your Units into a Team."),
                 new Command("order", "Change the order of Units in a Team."),
@@ -421,55 +510,5 @@ public class TextInput {
 
     private static String formatCaps(String input) {
         return input.substring(0, 1).toUpperCase() + input.substring(1);
-    }
-
-    protected class UnitEditor extends TextInput {
-
-        private final TextCommands unitEditCommands = new TextCommands();
-        private Unit unit;
-
-        public UnitEditor(Unit unit) {
-            super();
-            this.unit = unit;
-            makeTextCommands();
-            TextInput.menuInput(unitEditCommands); // This is wrong. Fix it sometime omg.
-            // TODO The rest of UnitEditor (IMPORT FROM TEXTINPUT!!!)
-        }
-
-        private void resolveInputEdit(String input, TextCommands commands) {
-            List<Command> cmdList = commands.getCommandList();
-            for (Command command : cmdList)
-                if (command.getCmd().equals(input))
-                    switch (input) {
-                        case "name":
-                        case "attr":
-                        case "stats":
-                        case "wep":
-                        case "asst":
-                        case "spec":
-                        case "psvs":
-                        case "seal":
-                        case "rmv":
-                            break; // Add whatever command hhere. Im taking a damn brea.k.
-                    }
-        }
-
-        private Unit getUnit() {
-            return unit;
-        }
-
-        private void makeTextCommands() {
-            unitEditCommands.addAllCommands(
-                    new Command("list", "List everything about your Unit."),
-                    new Command("name", "Change your Unit's name."),
-                    new Command("attr", "Change your Unit's attributes (Race / Movement)."),
-                    new Command("stats", "Change your Unit's stats."),
-                    new Command("wep", "Set your Unit's Weapon."),
-                    new Command("asst", "Set your Unit's Assist Skill."),
-                    new Command("spec", "Set your Unit's Special Skill."),
-                    new Command("psvs", "Set your Unit's Passives (A, B, C)."),
-                    new Command("seal", "Set your Unit's Seal."),
-                    new Command("rmv", "Remove your Unit's equipment (all but name, attributes and stats)."));
-        }
     }
 }
