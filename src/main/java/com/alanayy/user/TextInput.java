@@ -37,6 +37,7 @@ public class TextInput {
     private static final List<Unit> team1 = new ArrayList<>();
     private static final List<Unit> team2 = new ArrayList<>();
     private static Battle battle;
+    private static Unit tempUnit;
 
     static {
         System.out.println("Welcome to Fire Emblem - Duels! (Made by AlanAyy)");
@@ -87,15 +88,16 @@ public class TextInput {
             while (true) {
                 boolean validInput = false;
                 String input = scanner.nextLine();
-                int counter = 0;
-                for (Unit unit : unitList) {
+                for (int i = 0; i < unitList.size(); i++) {
+                    Unit unit = unitList.get(i);
                     String name = unit.getName();
                     if (input.equalsIgnoreCase(name)) {
                         validInput = true;
                         System.out.println("Editing \"" + name + "\"...");
-                        new UnitEditor(unit);
-                        // TODO Fix whatever the fuck is happening here lol.
-                        unit = UnitEditor.saveAndClose();
+                        // menuInput(unitEditCommands);
+                        // unitList.remove(i);
+                        // unitList.add(i, editAndGetUnit(unit));
+                        break;
                     }
                 }
                 if (input.equals("back")) {
@@ -108,6 +110,11 @@ public class TextInput {
             }
         }
     }
+
+    // private static Unit editAndGetUnit(Unit unit) {
+    //     new UnitEditor(unit);
+    //     return unit;
+    // }
 
     private static void delUnit() {
         boolean unitFound = false;
@@ -273,7 +280,7 @@ public class TextInput {
         quitGame();
     }
 
-    private static void resolveInput(String input, TextCommands commands) {
+    protected static void resolveInput(String input, TextCommands commands) {
         List<Command> cmdList = commands.getCommandList();
         for (Command command : cmdList)
             if (command.getCmd().equals(input))
@@ -416,27 +423,53 @@ public class TextInput {
         return input.substring(0, 1).toUpperCase() + input.substring(1);
     }
 
-    private static class UnitEditor {
+    protected class UnitEditor extends TextInput {
 
-        private static final TextCommands unitEditCommands = new TextCommands();
-        private static Unit unitToEdit;
+        private final TextCommands unitEditCommands = new TextCommands();
+        private Unit unit;
 
-        static {
-            System.out.println("Welcome to the Unit Editor!");
+        public UnitEditor(Unit unit) {
+            super();
+            this.unit = unit;
+            makeTextCommands();
+            TextInput.menuInput(unitEditCommands); // This is wrong. Fix it sometime omg.
+            // TODO The rest of UnitEditor (IMPORT FROM TEXTINPUT!!!)
+        }
 
+        private void resolveInputEdit(String input, TextCommands commands) {
+            List<Command> cmdList = commands.getCommandList();
+            for (Command command : cmdList)
+                if (command.getCmd().equals(input))
+                    switch (input) {
+                        case "name":
+                        case "attr":
+                        case "stats":
+                        case "wep":
+                        case "asst":
+                        case "spec":
+                        case "psvs":
+                        case "seal":
+                        case "rmv":
+                            break; // Add whatever command hhere. Im taking a damn brea.k.
+                    }
+        }
+
+        private Unit getUnit() {
+            return unit;
+        }
+
+        private void makeTextCommands() {
             unitEditCommands.addAllCommands(
                     new Command("list", "List everything about your Unit."),
                     new Command("name", "Change your Unit's name."),
-                    new Command("set", "Set your Unit's Equipment."),
-                    new Command("clear", "Clear your Unit's Equipment."));
-        }
-
-        public UnitEditor(Unit unit) {
-            unitToEdit = unit;
-        }
-
-        public static Unit saveAndClose() {
-            return unitToEdit;
+                    new Command("attr", "Change your Unit's attributes (Race / Movement)."),
+                    new Command("stats", "Change your Unit's stats."),
+                    new Command("wep", "Set your Unit's Weapon."),
+                    new Command("asst", "Set your Unit's Assist Skill."),
+                    new Command("spec", "Set your Unit's Special Skill."),
+                    new Command("psvs", "Set your Unit's Passives (A, B, C)."),
+                    new Command("seal", "Set your Unit's Seal."),
+                    new Command("rmv", "Remove your Unit's equipment (all but name, attributes and stats)."));
         }
     }
 }
